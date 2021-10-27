@@ -72,9 +72,10 @@ export const deleteLinkbook = (id) => async (dispatch) => {
   dispatch(setLinkbooks(data));
 };
 
-export const loadLinkbooks = (email) => async (dispatch) => {
-  const res = await fetch(`/linkbook/${email}`);
+export const loadLinkbooks = () => async (dispatch) => {
+  const res = await fetch(`/linkbook`);
   const data = await res.json();
+  console.log(data);
   dispatch(setLinkbooks(data));
 };
 

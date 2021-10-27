@@ -1,24 +1,19 @@
 class LinkbookController < ApplicationController
+  before_action :set_user
   before_action :set_linkbook, only: [:edit, :update, :destroy]
 
-  def show
-    user_email = params[:id] + '.com'
-    user = User.find_by(email: user_email)
-    @linkbooks = user.linkbooks
+  def index
+    @linkbooks = @user.linkbooks
 
     render json: @linkbooks
   end
 
   def create
-    if params[:name].empty?
-       render json: { successful: false}
-       return
-    end
-    user = User.find_by(email: params[:email])
-    @linkbook = Linkbook.new(name: params[:name], rating: 0, user_id: user.id, category: params[:category], private: true)
+    # Clean up this .new and make params method
+    @linkbook = Linkbook.new(name: params[:name], rating: 0, category: params[:category], user_id: session[:user_id], private: true)
 
     if @linkbook.save
-      render json: { successful: true}
+      render json: @linkbook
     else
       render json: @linkbook.errors, status: :unprocessable_entity
     end
@@ -38,7 +33,11 @@ class LinkbookController < ApplicationController
 
   protected
 
+  def set_user
+    @user = User.find(session[:user_id])
+  end
+
   def set_linkbook
-    @linkbook = Linkbook.find(params[:id])
+    @linkbook = @user.linkbooks.find(params[:id])
   end
 end

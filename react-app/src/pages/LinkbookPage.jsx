@@ -3,22 +3,15 @@ import NewLinkbookForm from "../partials/Links/newLinkbookForm";
 import Link from "../partials/Linkbook/Link";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
 import { useParams } from "react-router-dom";
 import { loadLinkbooks } from "../store/linkbooks";
 
 function LinkbookPage() {
-  const { user } = useAuth0();
   const dispatch = useDispatch();
   const sessionLinkbooks = useSelector((state) => state.linkbooks.linkbooks);
   const [newLinkbook, setNewLinkbook] = useState(false);
   const [visible, setVisible] = useState(true);
   let { id } = useParams();
-
-  useEffect(() => {
-    if (!user) return;
-    dispatch(loadLinkbooks(user.email));
-  }, [user]);
 
   function linkbookAnimation() {
     setNewLinkbook(!newLinkbook);

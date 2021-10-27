@@ -1,7 +1,7 @@
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
 
-const setUser = (user) => ({
+export const setUser = (user) => ({
   type: SET_USER,
   payload: user,
 });
@@ -10,38 +10,43 @@ const removeUser = () => ({
   type: REMOVE_USER,
 });
 
-export const login =
-  ({ email, password }) =>
-  async (dispatch) => {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await res.json();
-    dispatch(setUser(data));
-  };
-
 export const restoreUser = () => async (dispatch) => {
-  const res = await fetch("/api/auth");
+  const res = await fetch("/users/restore");
   const data = await res.json();
   if (res.ok) {
     dispatch(setUser(data));
   }
 };
 
-export const createUser = (user) => async (dispatch) => {
-  const res = await fetch(`/api/auth/signup`, {
+export const login = (email, password) => async (dispatch) => {
+  const res = await fetch("/users/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(user),
+    body: JSON.stringify({ email, password }),
   });
-
   const data = await res.json();
+  if (data.status === "error") {
+    console.log(data);
+    // Do something when user not found
+  } else {
+    dispatch(setUser(data));
+  }
+};
+
+export const createUser = (username, email, password) => async (dispatch) => {
+  console.log(email);
+  const res = await fetch("/users", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, email, password }),
+  });
+  const data = await res.json();
+  console.log(data);
 
   dispatch(setUser(data));
 };
@@ -61,14 +66,10 @@ export const photoUpload = (file) => async () => {
 };
 
 export const logout = () => async (dispatch) => {
-  const res = await fetch("/api/auth/logout", {
+  await fetch("users/logout", {
     method: "DELETE",
   });
-
-  const data = await res.json();
-  if (data.message === "User logged out") {
-    dispatch(removeUser());
-  }
+  dispatch(removeUser());
 };
 
 const initialState = { user: null };

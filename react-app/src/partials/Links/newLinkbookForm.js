@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
 import categories from "./data/categories";
 import { useDispatch } from "react-redux";
 import { createLinkbook } from "../../store/linkbooks";
@@ -10,7 +9,7 @@ function CategoryButton(category, func, selected) {
       onClick={() => func(category)}
       type="button"
       className={`border-gray-300 ${
-        selected == category && "border-blue-600"
+        selected === category && "border-blue-600"
       } m-1 bg-white py-2 px-3 border  rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
     >
       {category}
@@ -19,7 +18,6 @@ function CategoryButton(category, func, selected) {
 }
 
 function NewLinkbookForm() {
-  const { user } = useAuth0();
   const dispatch = useDispatch();
 
   const [selectedCategory, setSelectedCategory] = useState();
@@ -30,7 +28,7 @@ function NewLinkbookForm() {
     if (!name) {
       setNameReq(true);
     }
-    dispatch(createLinkbook(name, selectedCategory, user.email));
+    dispatch(createLinkbook(name, selectedCategory));
     window.location.reload(false);
   }
 

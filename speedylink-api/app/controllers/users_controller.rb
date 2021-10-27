@@ -1,11 +1,25 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :update, :destroy]
+  before_action :set_user, only: [:update, :destroy, :restore_user, :logout]
 
-  # GET /users/email
-  def show
-    pp params[:id]
-    session[:current_user_email] = params[:id]
-    render json: @user
+  def restore_user
+    if @user.nil?
+      render json: {status: "error", code: 4000, message: "no user found" }
+    else
+      render json: @user
+    end
+  end
+
+
+  def login
+    @user = User.find_by(email: params[:email])
+    if @user.nil?
+      render json: {status: "error", code: 4000, message: "no user found" }
+    elsif @user.password == params[:password]
+      session[:user_id] = @user.id
+      render json: @user
+    else
+      render json: {status: "error", code: 5000, message: "incorrect password" }
+    end
   end
 
   # POST /users
@@ -13,10 +27,14 @@ class UsersController < ApplicationController
     if User.exists?(email: params[:email])
       return
     end
-
+    
     @user = User.new(user_params)
+    
+    @user.password = params[:password]
 
+    
     if @user.save
+      session[:user_id] = @user.id
       render json: @user, status: :created, location: @user
     else
       render json: @user.errors, status: :unprocessable_entity
@@ -32,19 +50,22 @@ class UsersController < ApplicationController
     end
   end
 
-  # DELETE /users/1
   def destroy
     @user.destroy
+  end
+
+  def logout
+    session[:user_id] = nil
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = User.find(params[:id])
+      @user = User.find(session[:user_id])
     end
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:email)
+      params.require(:user).permit(:email, :password, :username)
     end
 end

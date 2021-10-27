@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import Transition from "../utils/Transition.js";
+import Transition from "./Transition";
 
 function Dropdown({ children, title }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);

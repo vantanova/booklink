@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
 
 function Header() {
-  const { loginWithRedirect } = useAuth0();
-
   const [top, setTop] = useState(true);
 
   // detect whether user has scrolled the page down by 10px
@@ -36,16 +33,16 @@ function Header() {
           <nav className="flex flex-grow">
             <ul className="flex flex-grow justify-end flex-wrap items-center">
               <li>
-                <button
-                  onClick={() => loginWithRedirect()}
+                <Link
+                  to="/sign-in"
                   className="font-medium text-gray-600 hover:text-gray-900 px-5 py-3 flex items-center transition duration-150 ease-in-out"
                 >
                   Sign in
-                </button>
+                </Link>
               </li>
               <li>
-                <button
-                  onClick={() => loginWithRedirect({ screen_hint: "signup" })}
+                <Link
+                  to="/signup"
                   className="btn-sm text-gray-200 bg-gray-900 hover:bg-gray-800 ml-3"
                 >
                   <span>Sign up</span>
@@ -59,7 +56,7 @@ function Header() {
                       fillRule="nonzero"
                     />
                   </svg>
-                </button>
+                </Link>
               </li>
             </ul>
           </nav>
