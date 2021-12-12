@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Switch, Route, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "./css/style.scss";
 
 import { useDispatch } from "react-redux";
@@ -7,16 +7,12 @@ import { useDispatch } from "react-redux";
 import AOS from "aos";
 import { focusHandling } from "cruip-js-toolkit";
 
-import Splash from "./pages/Splash";
-import Links from "./pages/Links";
-import ResetPassword from "./pages/ResetPassword";
-import LinkbookPage from "./pages/LinkbookPage";
-import ProtectedRoute from "./auth/ProtectedRoute";
-
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
+import Routes from "./Routes";
 
 import { restoreUser } from "./store/session";
+
+import Header from "./components/Header";
+import Footer from "./partials/Splash/Footer";
 
 function App() {
   const location = useLocation();
@@ -46,31 +42,24 @@ function App() {
   }, [location.pathname]); // triggered on route change
 
   if (!loaded) {
-    return null;
+    return (
+      <div className="flex items-center justify-center space-x-2 animate-pulse h-screen">
+        <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
+        <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
+        <div className="w-8 h-8 bg-blue-400 rounded-full"></div>
+      </div>
+    );
   }
 
   return (
     <>
-      <Switch>
-        <Route exact path="/">
-          <Splash />
-        </Route>
-        <Route path="/sign-in">
-          <SignIn />
-        </Route>
-        <Route path="/signup">
-          <SignUp />
-        </Route>
-        <Route path="/reset-password">
-          <ResetPassword />
-        </Route>
-        <ProtectedRoute exact path="/links">
-          <Links />
-        </ProtectedRoute>
-        <Route exact path="/linkbook/:id">
-          <LinkbookPage />
-        </Route>
-      </Switch>
+      <div className="flex flex-col min-h-screen overflow-hidden">
+        <Header />
+        <main className="flex-grow">
+          <Routes />
+        </main>
+        <Footer />
+      </div>
     </>
   );
 }

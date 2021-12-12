@@ -1,13 +1,13 @@
 class LinkbookController < ApplicationController
   before_action :set_user
-  before_action :set_linkbook, only: [:edit, :update, :destroy]
+  before_action :set_linkbook, only: [:show, :edit, :update, :destroy]
 
   def index
     @linkbooks = @user.linkbooks
 
-    render json: @linkbooks
+    render json: @linkbooks.order("created_at DESC")
   end
-
+  
   def create
     # Clean up this .new and make params method
     @linkbook = Linkbook.new(name: params[:name], rating: 0, category: params[:category], user_id: session[:user_id], private: true)
@@ -28,6 +28,7 @@ class LinkbookController < ApplicationController
   end
 
   def destroy
+    render json: @linkbook
     @linkbook.destroy
   end
 

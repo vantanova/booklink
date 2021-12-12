@@ -28,7 +28,6 @@ export const login = (email, password) => async (dispatch) => {
   });
   const data = await res.json();
   if (data.status === "error") {
-    console.log(data);
     // Do something when user not found
   } else {
     dispatch(setUser(data));
@@ -36,7 +35,6 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 export const createUser = (username, email, password) => async (dispatch) => {
-  console.log(email);
   const res = await fetch("/users", {
     method: "POST",
     headers: {
@@ -46,7 +44,6 @@ export const createUser = (username, email, password) => async (dispatch) => {
     body: JSON.stringify({ username, email, password }),
   });
   const data = await res.json();
-  console.log(data);
 
   dispatch(setUser(data));
 };

@@ -1,20 +1,22 @@
-import Header from "../partials/Splash/Header";
+import { useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
 import HeroHome from "../partials/Splash/HeroHome";
 import FeaturesHome from "../partials/Splash/Features";
 import FeaturesBlocks from "../partials/Splash/FeaturesBlocks";
-import Footer from "../partials/Splash/Footer";
 
 function Splash() {
+  const sessionUser = useSelector((state) => state.session.user);
+
+  if (sessionUser) {
+    return <Redirect to="/homepage" />;
+  }
+
   return (
-    <div className="flex flex-col min-h-screen overflow-hidden">
-      <Header />
-      <main className="flex-grow">
-        <HeroHome />
-        <FeaturesHome />
-        <FeaturesBlocks />
-      </main>
-      <Footer />
-    </div>
+    <>
+      <HeroHome />
+      <FeaturesHome />
+      <FeaturesBlocks />
+    </>
   );
 }
 

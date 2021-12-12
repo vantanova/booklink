@@ -1,3 +1,11 @@
 class LinkbookSerializer < ActiveModel::Serializer
-  attributes :id, :name, :category, :private, :rating, :links
+  attributes :id, :data
+
+  def data
+    { name: object.name,
+      category: object.category,
+      private: object.private,
+      rating: object.rating,
+      links: object.links }
+  end
 end

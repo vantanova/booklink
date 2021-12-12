@@ -9,9 +9,9 @@ const addLinkbook = (Linkbook) => ({
   payload: Linkbook,
 });
 
-const updateLinkbook = (Linkbook) => ({
+const updateLinkbook = (linkbook) => ({
   type: UPDATE_LINKBOOK,
-  payload: Linkbook,
+  payload: linkbook,
 });
 
 const setLinkbooks = (Linkbooks) => ({
@@ -62,6 +62,7 @@ export const changeLinkbook =
       }),
     });
     const data = await res.json();
+    dispatch(updateLinkbook(data));
   };
 
 export const deleteLinkbook = (id) => async (dispatch) => {
@@ -69,13 +70,12 @@ export const deleteLinkbook = (id) => async (dispatch) => {
     method: "DELETE",
   });
   const data = await res.json();
-  dispatch(setLinkbooks(data));
+  dispatch(removeLinkbook(data));
 };
 
 export const loadLinkbooks = () => async (dispatch) => {
   const res = await fetch(`/linkbook`);
   const data = await res.json();
-  console.log(data);
   dispatch(setLinkbooks(data));
 };
 
@@ -87,10 +87,27 @@ function reducer(state = initialState, action) {
     case ADD_LINKBOOK:
       return { ...state, linkbooks: [...state.linkbooks, action.payload] };
     case REMOVE_LINKBOOK:
+      const idxToRemove = state.linkbooks
+        .map((item) => item.id)
+        .indexOf(action.payload.id);
+
       return {
+        ...state,
         linkbooks: [
-          ...state.linkbooks.filter((linkbook) => linkbook !== action.payload),
+          ...state.linkbooks.slice(0, idxToRemove),
+          ...state.linkbooks.slice(idxToRemove + 1),
         ],
+      };
+    case UPDATE_LINKBOOK:
+      const idxToUpdate = state.linkbooks
+        .map((item) => item.id)
+        .indexOf(action.payload.id);
+
+      const newStateLinkbooks = state.linkbooks.map((x) => x);
+      newStateLinkbooks[idxToUpdate] = action.payload;
+      return {
+        ...state,
+        linkbooks: [...newStateLinkbooks],
       };
     case SET_LINKBOOKS:
       return { ...state, linkbooks: action.payload };

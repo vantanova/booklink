@@ -6,8 +6,6 @@ import { useDispatch } from "react-redux";
 function Link({ link }) {
   const dispatch = useDispatch();
 
-  console.log(link);
-
   return (
     <div
       data-aos="fade-in"
