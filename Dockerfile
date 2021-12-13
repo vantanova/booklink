@@ -1,16 +1,13 @@
 FROM ruby:3.0.2
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs
-
-RUN mkdir /speedylink-api
-WORKDIR /speedylink-api
-
-COPY ./Gemfile /speedylink-api/Gemfile
-COPY ./Gemfile.lock /speedylink-api/Gemfile.lock
-
-RUN gem install bundler
+RUN apt-get update -qq \
+&& apt-get install -y curl build-essential libpq-dev \
+ nodejs postgresql-client &&\
+  curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
+  curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+  echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+  apt-get update && apt-get install -y nodejs yarn
+ADD . /app
+WORKDIR /app
 RUN bundle install
-COPY . /speedylink-api
-
 EXPOSE 5000
-
-CMD rails s -p 5000 -b '0.0.0.0'
+CMD ["bash"]
