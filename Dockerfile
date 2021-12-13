@@ -4,7 +4,8 @@ RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs
 RUN mkdir /speedylink-api
 WORKDIR /speedylink-api
 
-COPY Gemfile Gemfile.lock .
+COPY ./Gemfile /speedylink-api/Gemfile
+COPY ./Gemfile.lock /speedylink-api/Gemfile.lock
 
 RUN gem install bundler
 RUN bundle install
